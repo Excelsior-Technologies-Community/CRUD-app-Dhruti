@@ -30,7 +30,9 @@ export const updateProduct = async (req, res) => {
         const product = await Product.findByIdAndUpdate(
             req.params.id,
             req.body,
-            { new: true }
+            { new: true,
+                runValidators: true,
+             }
         );
 
         res.status(200).json(product);
