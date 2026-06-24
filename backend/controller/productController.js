@@ -1,0 +1,75 @@
+import Product from "../models/Product.js";
+
+// CREATE PRODUCT
+export const createProduct = async (req, res) => {
+    try {
+        console.log(req.body);
+        const product = await Product.create({
+            name: req.body.name,
+            price: req.body.price,
+            category: req.body.category,
+            image: req.file ? req.file.filename : "",
+        });
+
+        res.status(201).json(product);
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// GET ALL PRODUCTS
+export const getProducts = async (req, res) => {
+    try {
+        const products = await Product.find();
+
+        res.status(200).json(products);
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// UPDATE PRODUCT
+export const updateProduct = async (req, res) => {
+    try {
+
+        const updateData = {
+            name: req.body.name,
+            price: req.body.price,
+            category: req.body.category,
+        };
+
+        if (req.file) {
+            updateData.image = req.file.filename;
+        }
+
+        const product = await Product.findByIdAndUpdate(
+            req.params.id,
+            updateData,
+            {
+                new: true,
+                runValidators: true,
+            }
+        );
+
+        res.status(200).json(product);
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// DELETE PRODUCT
+export const deleteProduct = async (req, res) => {
+    try {
+        await Product.findByIdAndDelete(req.params.id);
+
+        res.status(200).json({
+            message: "Product Deleted",
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
